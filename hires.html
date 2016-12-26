@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>粒子动画-火焰</title>
+</head>
+<style>
+    canvas{
+        background:#ccc;
+        overflow: hidden;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        position: absolute;
+        background-image: url("./back.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+<script>
+window.onload=function(){
+    var canvas=document.querySelector("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+//鼠标火焰
+    function hire() {
+        var cobj=canvas.getContext("2d");
+        var movex=0;
+        var movey=0;
+        var arr=[];
+        canvas.onmousemove=function(e){
+            movex=e.offsetX;
+            movey=e.offsetY;
+            function fire(){
+                this.x=movex;
+                this.y=movey;
+                this.r=3+3*Math.random();
+                this.speedy=2*Math.random()+3;
+                this.speedr=0.1;
+                this.life=5;
+                this.speedl=0.1;
+                this.color="rgb(226,17,12)";
+            }
+            fire.prototype={
+                draw:function(){
+                    cobj.save();      //保存原位置
+                    cobj.translate(this.x,this.y);     //平移
+                    cobj.beginPath();          //图形独立
+                    cobj.fillStyle=this.color;      //填充颜色样式
+                    cobj.arc(0,0,this.r,0,2*Math.PI);         //画圆
+                    cobj.fill();             //填充
+                    cobj.restore();          //还原到原来的位置
+                    cobj.globalCompositeOperation="lighter";
+                },
+                updata:function(){
+                    this.x+=6*Math.random()-3;
+                    this.y-=this.speedy;
+                    this.life-=this.speedl;
+                    this.r-=this.speedr;
+                }
+            };
+            setInterval(function(){
+                cobj.clearRect(0,0,canvas.width,canvas.height);
+                arr.push(new fire());
+                for(var i=0;i<arr.length;i++){
+                    arr[i].draw();
+                    arr[i].updata();
+                    if(arr[i].r<0||arr[i].life<0){
+                        arr[i]=new fire();
+                    }
+                }
+                if(arr.length>500){
+                    arr.shift();
+                }
+            },50);
+        };
+    }
+    hire();
+
+// 水龙头
+    function shui() {
+        var ctx = canvas.getContext("2d");
+        function lizi() {
+            this.x = 300;
+            this.y = 200;
+            this.r = 3+3*Math.random();
+            this.color = "rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+")";
+            this.speedy = -5;
+            this.speedx = 6*Math.random()-3;
+            this.zhongli = 0.3;
+            this.speedr = 0.05;
+        }
+        lizi.prototype = {
+            draw:function () {
+                ctx.save();
+                ctx.translate(this.x,this.y);
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(0,0,this.r,0,Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            },
+            update:function () {
+                this.x += this.speedx;
+                this.speedy += this.zhongli;
+                this.y += this.speedy;
+                this.r -= this.speedr;
+            }
+        };
+        var arr = [];
+        setInterval(function () {
+            ctx.clearRect(0,0,600,600);
+            arr.push(new lizi());
+            for(var i =0;i<arr.length;i++){
+                arr[i].draw();
+                arr[i].update();
+                if(arr[i].r<0){
+                    arr[i] = new lizi();
+                }
+            }
+            if(arr.length>100){
+                arr.shift();
+            }
+        },50);
+    }
+    shui();
+
+    function shui1() {
+        var ctx1 = canvas.getContext("2d");
+        function lizi() {
+            this.x = 1000;
+            this.y = 200;
+            this.r = 3+3*Math.random();
+            this.color = "rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+")";
+            this.speedy = -5;
+            this.speedx = 6*Math.random()-3;
+            this.zhongli = 0.3;
+            this.speedr = 0.05;
+        }
+        lizi.prototype = {
+            draw:function () {
+                ctx1.save();
+                ctx1.translate(this.x,this.y);
+                ctx1.beginPath();
+                ctx1.fillStyle = this.color;
+                ctx1.arc(0,0,this.r,0,Math.PI*2);
+                ctx1.fill();
+                ctx1.restore();
+            },
+            update:function () {
+                this.x += this.speedx;
+                this.speedy += this.zhongli;
+                this.y += this.speedy;
+                this.r -= this.speedr;
+            }
+        };
+        var arr = [];
+        setInterval(function () {
+            ctx1.clearRect(0,0,600,600);
+            arr.push(new lizi());
+            for(var i =0;i<arr.length;i++){
+                arr[i].draw();
+                arr[i].update();
+                if(arr[i].r<0){
+                    arr[i] = new lizi();
+                }
+            }
+            if(arr.length>100){
+                arr.shift();
+            }
+        },50);
+    }
+    shui1();
+
+}
+</script>
+<body>
+<canvas></canvas>
+</body>
+</html>
